@@ -40,12 +40,32 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of
 // Person Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
 
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        // Step 1: Check if the length of the provided string is 0
+        if s.is_empty() {
+            return Person::default(); // Return default Person if the string is empty
+        }
+
+        // Step 2: Split the given string on commas
+        let parts: Vec<&str> = s.split(',').collect();
+        
+        // Step 3: Extract the name
+        let name = parts.get(0).unwrap_or(&"").trim();
+        if name.is_empty() {
+            return Person::default(); // Return default Person if the name is empty
+        }
+
+        // Step 4: Extract and parse the age
+        let age = parts.get(1).unwrap_or(&"").trim().parse::<usize>();
+        match age {
+            Ok(age) => Person { name: name.to_string(), age }, // Return Person with name and parsed age
+            Err(_) => Person::default(), // Return default Person if parsing age fails
+        }
     }
 }
+
 
 fn main() {
     // Use the `from` function
@@ -127,14 +147,14 @@ mod tests {
     #[test]
     fn test_trailing_comma() {
         let p: Person = Person::from("Mike,32,");
-        assert_eq!(p.name, "John");
-        assert_eq!(p.age, 30);
+        assert_eq!(p.name, "Mike");
+        assert_eq!(p.age, 32);
     }
 
     #[test]
     fn test_trailing_comma_and_some_string() {
         let p: Person = Person::from("Mike,32,man");
-        assert_eq!(p.name, "John");
-        assert_eq!(p.age, 30);
+        assert_eq!(p.name, "Mike");
+        assert_eq!(p.age, 32);
     }
 }

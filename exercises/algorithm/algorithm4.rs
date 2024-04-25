@@ -3,7 +3,6 @@
 	This problem requires you to implement a basic interface for a binary tree
 */
 
-//I AM NOT DONE
 use std::cmp::Ordering;
 use std::fmt::Debug;
 
@@ -50,13 +49,63 @@ where
 
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
-        //TODO
+        if self.root.is_none() {
+            self.root = Some(Box::new(TreeNode::new(value)));
+        } else {
+            let mut current = self.root.as_mut().unwrap();
+            loop {
+                match value.cmp(&current.value) {
+                    Ordering::Less => {
+                        if current.left.is_none() {
+                            current.left = Some(Box::new(TreeNode::new(value)));
+                            break;
+                        } else {
+                            current = current.left.as_mut().unwrap();
+                        }
+                    }
+                    Ordering::Greater => {
+                        if current.right.is_none() {
+                            current.right = Some(Box::new(TreeNode::new(value)));
+                            break;
+                        } else {
+                            current = current.right.as_mut().unwrap();
+                        }
+                    }
+                    Ordering::Equal => {
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
-        //TODO
-        true
+        if self.root.is_none() {
+            return false;
+        }
+        let mut current = self.root.as_ref().unwrap();
+        loop {
+            match value.cmp(&current.value) {
+                Ordering::Less => {
+                    if current.left.is_none() {
+                        return false;
+                    } else {
+                        current = current.left.as_ref().unwrap();
+                    }
+                }
+                Ordering::Greater => {
+                    if current.right.is_none() {
+                        return false;
+                    } else {
+                        current = current.right.as_ref().unwrap();
+                    }
+                }
+                Ordering::Equal => {
+                    return true;
+                }
+            }
+        }
     }
 }
 
@@ -122,5 +171,4 @@ mod tests {
         }
     }
 }    
-
 
